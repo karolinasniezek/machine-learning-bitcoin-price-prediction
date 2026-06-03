@@ -49,10 +49,15 @@ TimeSeriesSplit(n_splits=5)
 
 ```text
 .
-├── bitcoin.csv
-├── bitcoin.png
-├── bitcoin-prediction.py
-└── README.md
+├── data
+│   └── bitcoin.csv
+├── figures
+│   └── bitcoin.png
+├── src
+│   └── bitcoin-prediction.py
+├── .gitignore
+├── README.md
+└── requirements.txt
 ```
 
 ## Run
