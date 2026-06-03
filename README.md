@@ -34,7 +34,7 @@ TimeSeriesSplit(n_splits=5)
 
 ## Visualization
 
-![Bitcoin Price](bitcoin.png)
+![Bitcoin Price](figures/bitcoin.png)
 
 ## Tech Stack
 
