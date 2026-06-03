@@ -1,3 +1,5 @@
+from cProfile import label
+
 import pandas as pd
 import  matplotlib.pyplot as plt
 import numpy as np
@@ -45,7 +47,7 @@ ts_split = TimeSeriesSplit(n_splits=5)
 
 models = {
     'LinearRegression': LinearRegression(),
-    'Lasso (alpha: 0.1)': Lasso(alpha=0.1, random_state=42),
+    'Lasso': Lasso(alpha=0.1, random_state=42),
     'SVR': SVR(C=3, kernel="rbf", epsilon=0.1),
     'KNeighbors': KNeighborsRegressor(n_neighbors=5, weights="distance"),
     'XGBoost': XGBRegressor(max_depth=4, subsample=0.8, random_state=42),
@@ -67,6 +69,7 @@ for name, model in models.items():
 
         if i == 0:
             X_train_scaled = scaler.fit_transform(X_train)
+            # continue
         else:
             X_train_scaled = scaler.transform(X_train)
 
@@ -84,3 +87,30 @@ for name, model in models.items():
         results[name]["MAE"].append(mae)
         results[name]["RMSE"].append(rmse)
         predictions[name].append((y_test.index, y_pred))
+
+final_results = {name: {metric:  np.mean(values) for metric, values in metrics.items()} for name, metrics in results.items()}
+resultsDataFrame = pd.DataFrame(final_results)
+print(resultsDataFrame)
+
+def plot_predictions(model_name, predictions, y):
+    fig, ax = plt.subplots(figsize=(12, 6))
+
+    ax.plot(y.index, y,
+            label="Real values",
+            linestyle="dashed",
+            color="black")
+
+    for idx, y_pred in predictions:
+        ax.plot(idx, y_pred, label=f"{model_name}: predictions")
+
+    ax.set_title(f"Chart for model {model_name}")
+    ax.set_xlabel("Date")
+    ax.set_ylabel("Bitcoin price")
+    ax.legend()
+
+    plt.tight_layout()
+    plt.savefig(f"../figures/{model_name}_prediction.png")
+
+for name, preds in predictions.items():
+    plot_predictions(name, preds, y)
+
